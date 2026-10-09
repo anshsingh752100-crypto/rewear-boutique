@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@200;300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-serif: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --gold: #C9A24B;
+  --gold-light: #E8D5A5;
+  --ink: #0B0B0C;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #0B0B0C;
+  color: #F8F6F2;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Custom Selection */
+::selection {
+  background-color: #C9A24B;
+  color: #0B0B0C;
+}
+
+/* Luxury hairline borders */
+.border-hairline {
+  border-width: 1px;
+  border-color: rgba(201, 162, 75, 0.2);
+}
+
+.border-hairline-subtle {
+  border-width: 1px;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.border-hairline-light {
+  border-width: 1px;
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+/* Metallic Gold Gradients */
+.gold-gradient-text {
+  background: linear-gradient(135deg, #FFFFFF 0%, #E8D5A5 50%, #C9A24B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-gradient-bg {
+  background: linear-gradient(135deg, #DFBF73 0%, #C9A24B 50%, #997528 100%);
+}
+
+.gold-hover-glow:hover {
+  box-shadow: 0 0 25px rgba(201, 162, 75, 0.25);
+}
+
+/* Subtle Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0B0B0C;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2A2A30;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #C9A24B;
+}
+
+/* Smooth Image Transitions */
+.editorial-img {
+  transition: transform 700ms cubic-bezier(0.25, 1, 0.5, 1), filter 700ms ease;
+}
+
+.group:hover .editorial-img {
+  transform: scale(1.05);
+}
