@@ -39,12 +39,14 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 Pre-seeded accounts are available immediately for testing:
 
-| Role | Email | Password | Access Capabilities |
+| Role | Email | Password | Sample Data & Capabilities |
 | :--- | :--- | :--- | :--- |
-| **Admin Atelier** | `admin@rewear.com` | `admin123` | Full access to `/admin` dashboard, inventory CRUD, orders, customers, coupons, reviews, content CMS, settings |
-| **Client Patron** | `user@rewear.com` | `user123` | Storefront browsing, rental bag, trousseau wishlist, event booking, saved addresses, order history |
+| **👑 Admin Atelier** | `anshsingh752100@gmail.com` | `Ansh@752100` | Full administrative control over `/admin` (Metrics, Inventory, Orders, Customers, CMS, Settings) |
+| **👰 Bride Client** | `priya@rewear.com` | `Client@123` | Priya Sharma: 2 past orders (Delivered Bridal Lehenga + Shipped Reception Lehenga), 2 wishlist items, reviews |
+| **🤵 Groom Client** | `arjun@rewear.com` | `Client@123` | Arjun Mehra: 2 past orders (Delivered Raw Silk Sherwani + Processing Bandhgala Tuxedo), saved addresses |
+| **💃 Sangeet Client** | `rhea@rewear.com` | `Client@123` | Rhea Kapoor: 2 orders (Delivered Sangeet Lehenga + Processing Pre-draped Saree & Earrings), wishlist items |
 
-*(Quick demo buttons are also embedded directly into the login screen for 1-click access)*
+*(1-Click quick login buttons are embedded directly on the `/login` screen for instant testing)*
 
 ---
 

@@ -19,46 +19,73 @@ async function main() {
   await prisma.siteContent.deleteMany();
 
   // 2. Seed Users
-  const adminPasswordHash = await bcrypt.hash('admin123', 10);
-  const userPasswordHash = await bcrypt.hash('user123', 10);
+  const adminPasswordHash = await bcrypt.hash('Ansh@752100', 10);
+  const clientPasswordHash = await bcrypt.hash('Client@123', 10);
 
+  // Admin Account: Ansh Singh
   const admin = await prisma.user.create({
     data: {
-      name: 'Rohan Singhania (Head Stylist)',
-      email: 'admin@rewear.com',
+      name: 'Ansh Singh (Atelier Admin)',
+      email: 'anshsingh752100@gmail.com',
       passwordHash: adminPasswordHash,
       role: 'ADMIN',
-      phone: '+91 98201 44552',
+      phone: '+91 98765 43210',
       isActive: true,
     },
   });
 
-  const customer = await prisma.user.create({
+  // Client Demo 1: Priya Sharma (Bride)
+  const customer1 = await prisma.user.create({
     data: {
-      name: 'Priya Sharma (Bride-to-Be)',
-      email: 'user@rewear.com',
-      passwordHash: userPasswordHash,
+      name: 'Priya Sharma (Bride)',
+      email: 'priya@rewear.com',
+      passwordHash: clientPasswordHash,
       role: 'CUSTOMER',
       phone: '+91 98450 12345',
       isActive: true,
     },
   });
 
+  // Alias customer for backwards compatibility (user@rewear.com)
+  await prisma.user.create({
+    data: {
+      name: 'Priya Sharma (Bride)',
+      email: 'user@rewear.com',
+      passwordHash: clientPasswordHash,
+      role: 'CUSTOMER',
+      phone: '+91 98450 12345',
+      isActive: true,
+    },
+  });
+
+  // Client Demo 2: Arjun Mehra (Groom)
   const customer2 = await prisma.user.create({
     data: {
-      name: 'Arjun Mehra',
+      name: 'Arjun Mehra (Groom)',
       email: 'arjun@rewear.com',
-      passwordHash: userPasswordHash,
+      passwordHash: clientPasswordHash,
       role: 'CUSTOMER',
       phone: '+91 97110 98765',
       isActive: true,
     },
   });
 
-  // Seed addresses for customer
+  // Client Demo 3: Rhea Kapoor (Bridesmaid & Sangeet)
+  const customer3 = await prisma.user.create({
+    data: {
+      name: 'Rhea Kapoor (Bridesmaid)',
+      email: 'rhea@rewear.com',
+      passwordHash: clientPasswordHash,
+      role: 'CUSTOMER',
+      phone: '+91 98200 54321',
+      isActive: true,
+    },
+  });
+
+  // Seed addresses for Client 1 (Priya)
   await prisma.address.create({
     data: {
-      userId: customer.id,
+      userId: customer1.id,
       fullName: 'Priya Sharma',
       addressLine1: 'Villa 14, Palm Meadows, Whitefield',
       addressLine2: 'Near Forum Value Mall',
@@ -67,6 +94,38 @@ async function main() {
       postalCode: '560066',
       country: 'India',
       phone: '+91 98450 12345',
+      isDefault: true,
+    },
+  });
+
+  // Seed addresses for Client 2 (Arjun)
+  await prisma.address.create({
+    data: {
+      userId: customer2.id,
+      fullName: 'Arjun Mehra',
+      addressLine1: 'B-42 Defence Colony',
+      addressLine2: 'Near Flyover Market',
+      city: 'New Delhi',
+      state: 'Delhi',
+      postalCode: '110024',
+      country: 'India',
+      phone: '+91 97110 98765',
+      isDefault: true,
+    },
+  });
+
+  // Seed addresses for Client 3 (Rhea)
+  await prisma.address.create({
+    data: {
+      userId: customer3.id,
+      fullName: 'Rhea Kapoor',
+      addressLine1: 'Flat 902, Horizon Sea-Facing Tower',
+      addressLine2: 'Pali Hill, Bandra West',
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      postalCode: '400050',
+      country: 'India',
+      phone: '+91 98200 54321',
       isDefault: true,
     },
   });
@@ -883,16 +942,24 @@ async function main() {
     await prisma.coupon.create({ data: c });
   }
 
-  // 6. Seed Sample Orders for Customer & Admin
-  const firstProduct = createdProducts[0]; // Velvet bridal
-  const sherwani = createdProducts[5]; // Raw silk sherwani
+  // 6. Seed Sample Orders for Customer Accounts
+  const pBridal1 = createdProducts[0];   // Imperial Crimson Velvet Bridal Lehenga
+  const pBridal2 = createdProducts[1];   // Noor Rose Dust Pastel Bridal Lehenga
+  const pSherwani1 = createdProducts[5]; // Maharaja Ivory Raw Silk Sherwani
+  const pTuxedo = createdProducts[22];   // Midnight Velvet Bandhgala Tuxedo
+  const pSaree = createdProducts[11];    // Midnight Sequin Pre-Draped Concept Saree
+  const pSangeet = createdProducts[17];  // Citrine Mirror-Work Sangeet Lehenga
+  const pJewel1 = createdProducts[27];   // Royal Kundan Polki Choker Set
+  const pJewel2 = createdProducts[28];   // Emerald Tear Diamond Drop Earrings
 
+  // --- Priya Sharma (Bride) Orders ---
+  // Order 1: Delivered wedding lehenga + jewellery
   await prisma.order.create({
     data: {
       orderNumber: 'RW-2026-88192',
-      userId: customer.id,
+      userId: customer1.id,
       customerName: 'Priya Sharma',
-      customerEmail: 'user@rewear.com',
+      customerEmail: 'priya@rewear.com',
       customerPhone: '+91 98450 12345',
       shippingAddress: JSON.stringify({
         fullName: 'Priya Sharma',
@@ -906,28 +973,80 @@ async function main() {
       paymentMethod: 'CARD',
       paymentStatus: 'PAID',
       status: 'DELIVERED',
-      subtotal: 18500,
-      tax: 2220,
+      subtotal: pBridal1.price + pJewel1.price,
+      tax: Math.round((pBridal1.price + pJewel1.price) * 0.12),
       shippingFee: 0,
       discountAmount: 1850,
-      total: 18870,
+      total: pBridal1.price + pJewel1.price + Math.round((pBridal1.price + pJewel1.price) * 0.12) - 1850,
       couponCode: 'REWEAR10',
-      estimatedDelivery: new Date(Date.now() - 86400000 * 3),
+      estimatedDelivery: new Date(Date.now() - 86400000 * 5),
       items: {
         create: [
           {
-            productId: firstProduct.id,
-            productName: firstProduct.name,
-            productImage: JSON.parse(firstProduct.images)[0],
-            price: firstProduct.price,
+            productId: pBridal1.id,
+            productName: pBridal1.name,
+            productImage: JSON.parse(pBridal1.images)[0],
+            price: pBridal1.price,
             quantity: 1,
             variant: 'S (Bust 34) / 3 Days Rental',
+          },
+          {
+            productId: pJewel1.id,
+            productName: pJewel1.name,
+            productImage: JSON.parse(pJewel1.images)[0],
+            price: pJewel1.price,
+            quantity: 1,
+            variant: '3 Days Rental',
           },
         ],
       },
     },
   });
 
+  // Order 2: Shipped reception pastel lehenga
+  await prisma.order.create({
+    data: {
+      orderNumber: 'RW-2026-91405',
+      userId: customer1.id,
+      customerName: 'Priya Sharma',
+      customerEmail: 'priya@rewear.com',
+      customerPhone: '+91 98450 12345',
+      shippingAddress: JSON.stringify({
+        fullName: 'Priya Sharma',
+        addressLine1: 'Villa 14, Palm Meadows, Whitefield',
+        city: 'Bengaluru',
+        state: 'Karnataka',
+        postalCode: '560066',
+        country: 'India',
+        phone: '+91 98450 12345',
+      }),
+      paymentMethod: 'CARD',
+      paymentStatus: 'PAID',
+      status: 'SHIPPED',
+      subtotal: pBridal2.price,
+      tax: Math.round(pBridal2.price * 0.12),
+      shippingFee: 0,
+      discountAmount: 1500,
+      total: pBridal2.price + Math.round(pBridal2.price * 0.12) - 1500,
+      couponCode: 'WEDDING15',
+      estimatedDelivery: new Date(Date.now() + 86400000 * 2),
+      items: {
+        create: [
+          {
+            productId: pBridal2.id,
+            productName: pBridal2.name,
+            productImage: JSON.parse(pBridal2.images)[0],
+            price: pBridal2.price,
+            quantity: 1,
+            variant: 'S (Bust 34) / 7 Days Rental (+₹1,500)',
+          },
+        ],
+      },
+    },
+  });
+
+  // --- Arjun Mehra (Groom) Orders ---
+  // Order 1: Delivered royal sherwani
   await prisma.order.create({
     data: {
       orderNumber: 'RW-2026-94201',
@@ -944,25 +1063,160 @@ async function main() {
         country: 'India',
         phone: '+91 97110 98765',
       }),
+      paymentMethod: 'CARD',
+      paymentStatus: 'PAID',
+      status: 'DELIVERED',
+      subtotal: pSherwani1.price,
+      tax: Math.round(pSherwani1.price * 0.12),
+      shippingFee: 0,
+      discountAmount: 500,
+      total: pSherwani1.price + Math.round(pSherwani1.price * 0.12) - 500,
+      couponCode: 'ROYAL500',
+      estimatedDelivery: new Date(Date.now() - 86400000 * 7),
+      items: {
+        create: [
+          {
+            productId: pSherwani1.id,
+            productName: pSherwani1.name,
+            productImage: JSON.parse(pSherwani1.images)[0],
+            price: pSherwani1.price,
+            quantity: 1,
+            variant: '40 Regular / 3 Days Rental',
+          },
+        ],
+      },
+    },
+  });
+
+  // Order 2: Processing Bandhgala Tuxedo
+  await prisma.order.create({
+    data: {
+      orderNumber: 'RW-2026-96310',
+      userId: customer2.id,
+      customerName: 'Arjun Mehra',
+      customerEmail: 'arjun@rewear.com',
+      customerPhone: '+91 97110 98765',
+      shippingAddress: JSON.stringify({
+        fullName: 'Arjun Mehra',
+        addressLine1: 'B-42 Defence Colony',
+        city: 'New Delhi',
+        state: 'Delhi',
+        postalCode: '110024',
+        country: 'India',
+        phone: '+91 97110 98765',
+      }),
       paymentMethod: 'COD',
       paymentStatus: 'PENDING',
       status: 'PROCESSING',
-      subtotal: 9999,
-      tax: 1199.88,
+      subtotal: pTuxedo.price,
+      tax: Math.round(pTuxedo.price * 0.12),
+      shippingFee: 0,
+      discountAmount: 650,
+      total: pTuxedo.price + Math.round(pTuxedo.price * 0.12) - 650,
+      couponCode: 'SAVE10',
+      estimatedDelivery: new Date(Date.now() + 86400000 * 3),
+      items: {
+        create: [
+          {
+            productId: pTuxedo.id,
+            productName: pTuxedo.name,
+            productImage: JSON.parse(pTuxedo.images)[0],
+            price: pTuxedo.price,
+            quantity: 1,
+            variant: '40 Regular / 3 Days Rental',
+          },
+        ],
+      },
+    },
+  });
+
+  // --- Rhea Kapoor (Bridesmaid) Orders ---
+  // Order 1: Delivered Sangeet outfit
+  await prisma.order.create({
+    data: {
+      orderNumber: 'RW-2026-92104',
+      userId: customer3.id,
+      customerName: 'Rhea Kapoor',
+      customerEmail: 'rhea@rewear.com',
+      customerPhone: '+91 98200 54321',
+      shippingAddress: JSON.stringify({
+        fullName: 'Rhea Kapoor',
+        addressLine1: 'Flat 902, Horizon Sea-Facing Tower',
+        city: 'Mumbai',
+        state: 'Maharashtra',
+        postalCode: '400050',
+        country: 'India',
+        phone: '+91 98200 54321',
+      }),
+      paymentMethod: 'CARD',
+      paymentStatus: 'PAID',
+      status: 'DELIVERED',
+      subtotal: pSangeet.price,
+      tax: Math.round(pSangeet.price * 0.12),
       shippingFee: 0,
       discountAmount: 500,
-      total: 10698.88,
+      total: pSangeet.price + Math.round(pSangeet.price * 0.12) - 500,
       couponCode: 'ROYAL500',
+      estimatedDelivery: new Date(Date.now() - 86400000 * 10),
+      items: {
+        create: [
+          {
+            productId: pSangeet.id,
+            productName: pSangeet.name,
+            productImage: JSON.parse(pSangeet.images)[0],
+            price: pSangeet.price,
+            quantity: 1,
+            variant: 'M (Bust 36) / 3 Days Rental',
+          },
+        ],
+      },
+    },
+  });
+
+  // Order 2: Processing Pre-Draped Concept Saree & Drop Earrings
+  await prisma.order.create({
+    data: {
+      orderNumber: 'RW-2026-97812',
+      userId: customer3.id,
+      customerName: 'Rhea Kapoor',
+      customerEmail: 'rhea@rewear.com',
+      customerPhone: '+91 98200 54321',
+      shippingAddress: JSON.stringify({
+        fullName: 'Rhea Kapoor',
+        addressLine1: 'Flat 902, Horizon Sea-Facing Tower',
+        city: 'Mumbai',
+        state: 'Maharashtra',
+        postalCode: '400050',
+        country: 'India',
+        phone: '+91 98200 54321',
+      }),
+      paymentMethod: 'CARD',
+      paymentStatus: 'PAID',
+      status: 'PROCESSING',
+      subtotal: pSaree.price + pJewel2.price,
+      tax: Math.round((pSaree.price + pJewel2.price) * 0.12),
+      shippingFee: 0,
+      discountAmount: 475,
+      total: pSaree.price + pJewel2.price + Math.round((pSaree.price + pJewel2.price) * 0.12) - 475,
+      couponCode: 'REWEAR10',
       estimatedDelivery: new Date(Date.now() + 86400000 * 4),
       items: {
         create: [
           {
-            productId: sherwani.id,
-            productName: sherwani.name,
-            productImage: JSON.parse(sherwani.images)[0],
-            price: sherwani.price,
+            productId: pSaree.id,
+            productName: pSaree.name,
+            productImage: JSON.parse(pSaree.images)[0],
+            price: pSaree.price,
             quantity: 1,
-            variant: '40 Regular / 3 Days Rental',
+            variant: 'M (Bust 36) / 3 Days Rental',
+          },
+          {
+            productId: pJewel2.id,
+            productName: pJewel2.name,
+            productImage: JSON.parse(pJewel2.images)[0],
+            price: pJewel2.price,
+            quantity: 1,
+            variant: '3 Days Rental',
           },
         ],
       },
@@ -972,8 +1226,8 @@ async function main() {
   // 7. Seed Reviews
   await prisma.review.create({
     data: {
-      productId: firstProduct.id,
-      userId: customer.id,
+      productId: pBridal1.id,
+      userId: customer1.id,
       userName: 'Priya Sharma (Bride)',
       rating: 5,
       title: 'Saved over ₹1.4 Lakhs on my dream wedding lehenga!',
@@ -984,7 +1238,8 @@ async function main() {
 
   await prisma.review.create({
     data: {
-      productId: sherwani.id,
+      productId: pSherwani1.id,
+      userId: customer2.id,
       userName: 'Arjun Mehra (Groom)',
       rating: 5,
       title: 'Turned heads at our Delhi reception',
@@ -993,11 +1248,52 @@ async function main() {
     },
   });
 
-  // 8. Seed Wishlist
+  await prisma.review.create({
+    data: {
+      productId: pSaree.id,
+      userId: customer3.id,
+      userName: 'Rhea Kapoor (Bridesmaid)',
+      rating: 5,
+      title: 'Danced all night at the Sangeet with zero hassle',
+      comment: 'Pre-draped sarees are an absolute blessing! The sequin shimmer was glamorous under chandelier lighting, and I did not have to worry about re-pleating once while dancing. Loved the packaging and hygiene.',
+      isApproved: true,
+    },
+  });
+
+  // 8. Seed Wishlist Items for Each Demo Client
+  // Priya's Wishlist
   await prisma.wishlistItem.create({
     data: {
-      userId: customer.id,
-      productId: sherwani.id,
+      userId: customer1.id,
+      productId: pBridal2.id,
+    },
+  });
+  await prisma.wishlistItem.create({
+    data: {
+      userId: customer1.id,
+      productId: pJewel1.id,
+    },
+  });
+
+  // Arjun's Wishlist
+  await prisma.wishlistItem.create({
+    data: {
+      userId: customer2.id,
+      productId: pTuxedo.id,
+    },
+  });
+
+  // Rhea's Wishlist
+  await prisma.wishlistItem.create({
+    data: {
+      userId: customer3.id,
+      productId: pSangeet.id,
+    },
+  });
+  await prisma.wishlistItem.create({
+    data: {
+      userId: customer3.id,
+      productId: pJewel2.id,
     },
   });
 

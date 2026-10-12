@@ -85,25 +85,50 @@ export default function LoginPage() {
         </div>
 
         {/* Demo Credentials Quick-Select Pill Buttons */}
-        <div className="p-3 bg-[#0B0B0C] border border-[#222226] text-[11px] space-y-2">
-          <p className="text-[#C9A24B] uppercase tracking-wider text-[10px] font-semibold flex items-center gap-1.5">
-            <KeyRound className="w-3.5 h-3.5" />
-            Quick Demo Credentials:
+        <div className="p-3.5 bg-[#0B0B0C] border border-[#222226] text-[11px] space-y-2.5">
+          <p className="text-[#C9A24B] uppercase tracking-wider text-[10px] font-semibold flex items-center justify-between">
+            <span className="flex items-center gap-1.5">
+              <KeyRound className="w-3.5 h-3.5" />
+              1-Click Demo Logins:
+            </span>
+            <span className="text-[9px] text-neutral-500 font-normal">Click to auto-fill</span>
           </p>
-          <div className="flex gap-2">
+          
+          {/* Admin Button */}
+          <button
+            type="button"
+            onClick={() => fillDemoAccount('anshsingh752100@gmail.com', 'Ansh@752100')}
+            className="w-full py-2 px-3 bg-[#1E1E24] hover:bg-[#C9A24B] hover:text-black text-[#DFBF73] text-[10px] tracking-wider uppercase border border-[#C9A24B]/40 hover:border-[#C9A24B] font-semibold transition-all flex items-center justify-between"
+          >
+            <span>👑 Admin (Ansh Singh)</span>
+            <span className="font-mono text-[9px] opacity-75">anshsingh752100@gmail.com</span>
+          </button>
+
+          {/* Client Buttons Grid */}
+          <div className="grid grid-cols-3 gap-1.5 pt-0.5">
             <button
               type="button"
-              onClick={() => fillDemoAccount('admin@rewear.com', 'admin123')}
-              className="flex-1 py-1.5 px-2 bg-[#1A1A20] hover:bg-[#C9A24B] hover:text-black text-neutral-300 text-[10px] tracking-wider uppercase border border-[#2A2A30] transition-colors"
+              onClick={() => fillDemoAccount('priya@rewear.com', 'Client@123')}
+              className="py-1.5 px-2 bg-[#141418] hover:bg-[#C9A24B] hover:text-black text-neutral-300 text-[10px] tracking-wider uppercase border border-[#2A2A30] transition-colors truncate text-center"
+              title="Bride (Priya Sharma) - 2 Orders, Wishlist, Reviews"
             >
-              Admin Atelier
+              👰 Bride (Priya)
             </button>
             <button
               type="button"
-              onClick={() => fillDemoAccount('user@rewear.com', 'user123')}
-              className="flex-1 py-1.5 px-2 bg-[#1A1A20] hover:bg-[#C9A24B] hover:text-black text-neutral-300 text-[10px] tracking-wider uppercase border border-[#2A2A30] transition-colors"
+              onClick={() => fillDemoAccount('arjun@rewear.com', 'Client@123')}
+              className="py-1.5 px-2 bg-[#141418] hover:bg-[#C9A24B] hover:text-black text-neutral-300 text-[10px] tracking-wider uppercase border border-[#2A2A30] transition-colors truncate text-center"
+              title="Groom (Arjun Mehra) - 2 Orders, Sherwani & Tuxedo"
             >
-              Client Patron
+              🤵 Groom (Arjun)
+            </button>
+            <button
+              type="button"
+              onClick={() => fillDemoAccount('rhea@rewear.com', 'Client@123')}
+              className="py-1.5 px-2 bg-[#141418] hover:bg-[#C9A24B] hover:text-black text-neutral-300 text-[10px] tracking-wider uppercase border border-[#2A2A30] transition-colors truncate text-center"
+              title="Sangeet / Bridesmaid (Rhea Kapoor) - Saree & Jewellery"
+            >
+              💃 Sangeet (Rhea)
             </button>
           </div>
         </div>
